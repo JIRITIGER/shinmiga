@@ -554,7 +554,7 @@ footer a{color:var(--gold);text-decoration:none;}
 
 /* TOAST */
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--navy);color:white;padding:0.65rem 1.3rem;border-radius:28px;font-size:0.8rem;font-weight:500;z-index:3000;transition:transform 0.35s ease;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
-body.is-mobile .toast{bottom:calc(58px + 1rem);}
+body.is-mobile .toast{bottom:calc(58px + 1.5rem);font-size:0.88rem;padding:0.8rem 1.5rem;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 
 /* fade-in: CSS animation만 사용 — JS 의존성 제거 */
@@ -1307,7 +1307,7 @@ function openMap(){
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3300);
+  setTimeout(()=>t.classList.remove('show'),5000);
 }
 
 // ── 초기화 ──
