@@ -29,7 +29,7 @@ try {
     const rebuilt={};
     Object.values(data).forEach(r=>{
       if(r.status==="cancelled")return;
-      const idx=r.room==="신미가 6호실"?0:r.room==="신미가 7호실"?1:-1;
+      const idx=r.room==="신미가 6호실"?0:r.room==="신미가 7호실"?1:r.room==="신미가 독채"?2:-1;
       if(idx===-1)return;
       let c=new Date(r.checkin),e=new Date(r.checkout);
       while(c<e){const ds=c.toISOString().split("T")[0];if(!rebuilt[ds])rebuilt[ds]=[];if(!rebuilt[ds].includes(idx))rebuilt[ds].push(idx);c.setDate(c.getDate()+1);}
@@ -470,11 +470,13 @@ body.is-mobile .main-nav:not(.mob-open){display:none;}
 .cday.empty,.cday.past{cursor:default;}.cday.past{color:#ccc;}
 .cday.avail{color:var(--navy);}.cday.avail:hover{background:rgba(26,143,160,0.12);}
 .cday.bk-a{background:rgba(239,68,68,0.1);}.cday.bk-b{background:rgba(59,130,246,0.1);}.cday.bk-both{background:rgba(150,0,200,0.12);}
+.bk-dok{background:rgba(245,158,11,0.15);}
 .cday.today{font-weight:700;outline:2px solid var(--gold);outline-offset:-2px;}
 .dnum{font-size:0.76rem;line-height:1;}
 .ddots{display:flex;gap:2px;}
 .ddot{width:3.5px;height:3.5px;border-radius:50%;}
 .dot-a{background:#ef4444;}.dot-b{background:#3b82f6;}
+.dot-dok{background:#f59e0b;}
 
 /* ───────── RESERVATION ───────── */
 .res-panel{background:white;border-radius:18px;padding:1.45rem;box-shadow:var(--sh);border:1px solid var(--border);margin-top:1.2rem;}
@@ -823,6 +825,7 @@ const NIGHT_B64='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BS
       <div class="leg-item"><div class="leg-dot" style="background:#ef4444"></div>6호 예약됨</div>
       <div class="leg-item"><div class="leg-dot" style="background:#3b82f6"></div>7호 예약됨</div>
       <div class="leg-item"><div class="leg-dot" style="background:#9333ea"></div>전체 마감</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>독채 예약됨</div>
       <div class="leg-item"><div class="leg-dot" style="background:var(--gold)"></div>오늘</div>
     </div>
     <div class="cal-days-hdr">
@@ -1175,6 +1178,7 @@ function renderCal(){
     const bk=bookedDates[ds]||[];
     const cell=document.createElement('div');cell.className='cday';
     if(isPast)cell.classList.add('past');
+    else if(bk.includes(2))cell.classList.add('bk-dok');
     else if(bk.length>=2)cell.classList.add('bk-both');
     else if(bk.includes(0))cell.classList.add('bk-a');
     else if(bk.includes(1))cell.classList.add('bk-b');
@@ -1183,10 +1187,10 @@ function renderCal(){
     const dn=document.createElement('div');dn.className='dnum';dn.textContent=d;cell.appendChild(dn);
     if(bk.length>0&&!isPast){
       const dots=document.createElement('div');dots.className='ddots';
-      bk.forEach(r=>{const dot=document.createElement('div');dot.className=`ddot ${r===0?'dot-a':'dot-b'}`;dots.appendChild(dot);});
+      bk.forEach(r=>{const dot=document.createElement('div');dot.className=`ddot ${r===0?'dot-a':r===1?'dot-b':'dot-dok'}`;dots.appendChild(dot);});
       cell.appendChild(dots);
     }
-    if(!isPast&&bk.length<2){
+    if(!isPast&&bk.length<2&&!bk.includes(2)){
       cell.onclick=()=>{
         document.getElementById('chk-in').value=ds;
         calcPrice();goto('booking');showToast('날짜를 선택했습니다.');
